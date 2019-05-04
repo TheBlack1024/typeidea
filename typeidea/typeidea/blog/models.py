@@ -57,7 +57,7 @@ class Post(models.Model):
         (STATUS_DRAFT,'草稿'),
     )
 
-    title = models.CharField(max_length=255,verbose_name="biaot")
+    title = models.CharField(max_length=255,verbose_name="标题")
     desc = models.CharField(max_length=1024,blank=True,verbose_name="摘要")
     content = models.TextField(verbose_name="正文",help_text="正文必须为MarkDown格式")
     status = models.PositiveSmallIntegerField(default=STATUS_NORMAL,
@@ -71,6 +71,6 @@ class Post(models.Model):
         verbose_name = verbose_name_plural = "文章"
         ordering = ['-id'] #根据id进行降序排序
 
-    def __str__(self):
-        return self.name
+    #def __str__(self):
+        #return self.name
 

@@ -33,15 +33,17 @@ class TagAdmin(admin.ModelAdmin):
 class PostAdmin(admin.ModelAdmin):
     list_display = [
         'title','category','status',
-        'created_time','operator'
+        'created_time', 'owner',
+        'operator',
+
     ]
     list_display_links = []
 
     list_filter = ['category',]
-    search_fields = ['title','category_name']
+    search_fields = ['title','category__name']
 
     actions_on_top = True
-    actions_on_bottom = True
+    actions_on_bottom = False
 
     #编辑页面
     save_on_top = True
@@ -56,7 +58,7 @@ class PostAdmin(admin.ModelAdmin):
 
     def operator(self,obj):
         return format_html(
-            '<a href="{}>编辑</a>',
+            '<a href="{}">编辑</a>',
             reverse('admin:blog_post_change',args=(obj.id,))
         )
     operator.short_description = '操作'
