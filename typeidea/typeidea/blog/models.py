@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.functional import cached_property
 
+import mistune
 
 class Category(models.Model):
     STATUS_NORMAL = 1
@@ -83,6 +85,8 @@ class Post(models.Model):
     owner = models.ForeignKey(User,verbose_name="作者",on_delete=models.CASCADE)
     created_time = models.DateTimeField(auto_now_add=True,verbose_name="创建时间")
 
+    content_html = models.TextField(verbose_name="正文html代码",blank=True,editable=False)
+
     pv = models.PositiveIntegerField(default=1)
     pu = models.PositiveIntegerField(default=1)
 
@@ -93,6 +97,9 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self,*args,**kwargs):
+        self.content_html = mistune.markdown(self.content)
+        super().save(*args,**kwargs)
 
     @staticmethod
     def get_by_tag(tag_id):
@@ -128,3 +135,7 @@ class Post(models.Model):
     @classmethod
     def hot_posts(cls):
         return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
+
+    @cached_property
+    def tags(self):
+        return ','.join(self.tag.values_list('name',flat=True))

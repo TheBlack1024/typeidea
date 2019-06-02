@@ -2,10 +2,10 @@ from django.contrib import admin
 
 from .models import Comment
 from typeidea.custom_site import custom_site
+import xadmin
 
-
-@admin.register(Comment,site=custom_site)
-class CommentAdmin(admin.ModelAdmin):
+@xadmin.sites.register(Comment)
+class CommentAdmin:
     list_display = (
         'target','nickname',
         'content','website',

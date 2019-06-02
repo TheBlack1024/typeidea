@@ -1,8 +1,15 @@
-from django.db.models import Q
+from datetime import date
+
+from django.core.cache import cache
+
+from django.db.models import Q,F
 from django.views.generic import ListView,DetailView
 from django.shortcuts import get_object_or_404
 from config.models import SideBar
 from .models import Post,Category,Tag
+
+from comment.forms import CommentForm
+from comment.models import Comment
 
 class CommonViewMixin:
     def get_context_data(self,**kwargs):
@@ -61,6 +68,52 @@ class PostDetailView(CommonViewMixin,DetailView):
     template_name = 'blog/detail.html'
     context_object_name = 'post'
     pk_url_kwarg = 'post_id'
+    """
+    评论模块
+    def get_context_data(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'comment_form': CommentForm,
+            'comment_list': Comment.get_by_target(self.request.path)
+        })
+        return context
+    """
+    """
+    统计用户访问量
+    def get(self,request, *args, **kwargs):
+        response = super().get(request,*args,**kwargs)
+        Post.objects.filter(pk=self.object.id).update(pv=F('pv')+ 1, pu=F('pu')+1)
+
+        #调试用
+        from django.db import connection
+        print(connection.queries)
+        return response
+    """
+    def get(self,request,*args,**kwargs):
+        response = super().get(request,*args,**kwargs)
+        self.handle_visited()
+        return response
+
+    def handle_visited(self):
+        increase_pv = False
+        increase_pu = False
+        uid = self.request.uid
+        pv_key = 'pv:%s:%s' % (uid,self.request.path)
+        pu_key = 'pu:%s:%s:%s' % (uid,str(date.today()),self.request.path)
+        if not cache.get(pv_key):
+            increase_pv = True
+            cache.set(pv_key,1,1*60) #1分钟有效
+
+        if not cache.get(pu_key):
+            increase_pu = True
+            cache.set(pv_key,1,24*60*60) #24小时有效
+
+        if increase_pv and increase_pu:
+            Post.objects.filter(pk=self.object.id).update(pv=F('pv')+1,pu=F('pu')+1)
+        elif increase_pv:
+            Post.objects.filter(pk=self.object.id).update(pv=F('pv')+1)
+        else:
+            Post.objects.filter(pk=self.object.id).update(pu=F('pu')+1)
 
 
 class SearchView(IndexView):
