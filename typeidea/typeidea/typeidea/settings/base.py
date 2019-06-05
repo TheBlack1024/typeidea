@@ -45,6 +45,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'dal',
+    'dal_select2',
+
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -119,8 +124,27 @@ USE_L10N = True
 
 USE_TZ = True
 
+XADMIN_TITLE = 'Typeidea 管理后台'
+XADMIN_FOOTER_TITLE = 'power by TheBlack'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CKEITOR_CONFIG = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': 800,
+        'tabSpaces': 4,
+        'extraPlugins': 'codesnippet',#配置代码插件
+    },
+}
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+CKEDITOR_UPLOAD_PATH = "article_images"
+
+DEFAULT_FILE_STORAGE = 'typeidea.storage.WatermarkStorage'
