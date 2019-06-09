@@ -20,8 +20,6 @@ from django.conf.urls.static import static
 #from django.urls import path
 from django.contrib.sitemaps import views as sitemap_views
 
-
-from .custom_site import custom_site
 #from blog.views import post_list,post_detail #function views引用情况
 from blog.views import (
     IndexView,CategoryView,TagView,
@@ -29,15 +27,25 @@ from blog.views import (
 )
 from blog.rss import LatestPostFeed
 from blog.sitemap import PostSitemap
-
+#from blog.apis import post_list,PostList
+from blog.apis import PostViewSet,CategoryViewSet
 
 from comment.views import CommentView
 from config.views import LinkListView
-from .custom_site import custom_site
+
 
 import xadmin
 
+from .custom_site import custom_site
 from .autocomplete import CategoryAutocomplete,TagAutocomplete
+
+from rest_framework.routers import DefaultRouter
+from rest_framework.documentation import include_docs_urls
+
+router = DefaultRouter()
+router.register(r'post',PostViewSet,base_name='api-post')
+router.register(r'category',CategoryViewSet,base_name='api-category')
+
 
 
 
@@ -60,5 +68,10 @@ urlpatterns = [
     url(r'^category-autocomplete/$',CategoryAutocomplete.as_view(),name='category-autocomplete'),
     url(r'^tag-autocomplete/$',TagAutocomplete.as_view(),name='tag-autocomplete'),
     url('^ckeditor/',include('ckeditor_uploader.urls')),
+
+    #url(r'^api/post/',post_list,name='post-list'),
+    #url(r'^api/post/',PostList.as_view(),name='post-list'),
+    url(r'^api/',include(router.urls)),
+    url(r'^api/docs/',include_docs_urls(title='typeidea apis')),
 
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
