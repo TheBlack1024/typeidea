@@ -1,15 +1,15 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% load static %}
-    {% block extra_head %}
-    {% endblock %}
     <meta charset="UTF-8">
     <title>{% block title %}首页{% endblock %}- typeieda博客系统</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,
         shrink-to-fit=no">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
+    {% block extra_head %}
+    {% endblock %}
     <style>
         .post {
             margin-bottom: 5px; //配置每个post卡片下面的间隔

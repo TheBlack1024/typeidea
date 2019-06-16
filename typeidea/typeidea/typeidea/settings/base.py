@@ -23,6 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '%h!h%x5_%2$*1d^5hn#-vf@ix4wi(gvy(z(&)nat)yiv-0#agf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
 
 
 ALLOWED_HOSTS = []
@@ -68,6 +69,9 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'typeidea.urls'
 
 THEME = 'bootstrap'
+
+#STATIC_ROOT = '/tmp/static'
+
 
 TEMPLATES = [
     {
@@ -126,6 +130,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+
+
+
 XADMIN_TITLE = 'Typeidea 管理后台'
 XADMIN_FOOTER_TITLE = 'power by TheBlack'
 
@@ -134,6 +141,10 @@ XADMIN_FOOTER_TITLE = 'power by TheBlack'
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,'themes', THEME,"static"),
+]
+
 
 CKEITOR_CONFIG = {
     'default': {

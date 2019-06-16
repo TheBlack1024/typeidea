@@ -19,6 +19,7 @@ from django.conf.urls import url,include
 from django.conf.urls.static import static
 #from django.urls import path
 from django.contrib.sitemaps import views as sitemap_views
+from django.views.decorators.cache import cache_page
 
 #from blog.views import post_list,post_detail #function views引用情况
 from blog.views import (
@@ -63,8 +64,8 @@ urlpatterns = [
     url(r'^author/(?P<owner_id>\d+)\$',AuthorView.as_view(),name='author'),
     url(r'^comment/$',CommentView.as_view(),name='comment'),
     url(r'^rss|feed/',LatestPostFeed(),name='rss'),
-    url(r'^sitemap\.xml$',sitemap_views.sitemap,{'sitemaps': {'posts':
-                                                              PostSitemap}}),
+    url(r'^sitemap\.xml$',cache_page(60 * 20,key_prefix='sitemap_cache_')
+    (sitemap_views.sitemap),{'sitemaps': {'posts': PostSitemap}}),
     url(r'^category-autocomplete/$',CategoryAutocomplete.as_view(),name='category-autocomplete'),
     url(r'^tag-autocomplete/$',TagAutocomplete.as_view(),name='tag-autocomplete'),
     url('^ckeditor/',include('ckeditor_uploader.urls')),
@@ -73,5 +74,13 @@ urlpatterns = [
     #url(r'^api/post/',PostList.as_view(),name='post-list'),
     url(r'^api/',include(router.urls)),
     url(r'^api/docs/',include_docs_urls(title='typeidea apis')),
+    #url(r'^sitemap\.xml$',cache_page(60 * 20,key_prefix='sitemap_cache_')
+    #(sitemap_views.sitemap),{'sitemaps': {'posts': PostSitemap}}),
 
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        url(r'^__debug__/',include(debug_toolbar.urls)),
+    ]+ urlpatterns
