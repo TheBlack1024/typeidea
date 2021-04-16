@@ -32,7 +32,7 @@ setup(
         'Pillow==5.1.0',
         'coreapi==2.3.3',
         # debug
-        'django-debug-toolbar==1.11',
+        'django-debug-toolbar==1.11.1',
         'django-silk==3.0.2',
     ],
     extras_require = {
